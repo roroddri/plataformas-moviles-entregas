@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Control de Versiones con Git - TP Bootstrap</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding-top: 56px; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="#">TP Bootstrap</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#comandos">Comandos</a></li>
+        </ul>
+        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#infoModal">
+          Más info
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mt-4">
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <h1 class="text-center">Control de Versiones con Git</h1>
+        <p class="lead">
+          <strong>Git</strong> es un sistema de control de versiones distribuido, ampliamente utilizado en el desarrollo
+          de software moderno. Fue creado para gestionar proyectos de forma rápida, eficiente y colaborativa.
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+
+        <h2 id="comandos">Comandos más populares de Git</h2>
+        <ul class="list-group mb-3 shadow p-3 bg-white rounded">
+          <li class="list-group-item"><code>git init</code> - Inicializa un nuevo repositorio.</li>
+          <li class="list-group-item"><code>git clone [url]</code> - Clona un repositorio remoto.</li>
+          <li class="list-group-item"><code>git status</code> - Muestra el estado del repositorio.</li>
+          <li class="list-group-item"><code>git add [archivo]</code> - Agrega archivos al área de preparación.</li>
+          <li class="list-group-item"><code>git commit -m "[mensaje]"</code> - Crea un commit.</li>
+          <li class="list-group-item"><code>git push</code> - Sube cambios al repositorio remoto.</li>
+          <li class="list-group-item"><code>git pull</code> - Descarga y fusiona cambios.</li>
+          <li class="list-group-item"><code>git checkout [rama]</code> - Cambia de rama.</li>
+        </ul>
+
+        <div class="accordion mb-4" id="accordionComandos">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseOne">
+                ¿Cómo empezar con Git?
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionComandos">
+              <div class="accordion-body">
+                Flujo inicial: git init → git add . → git commit → git push.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseTwo">
+                ¿Qué es un branch?
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionComandos">
+              <div class="accordion-body">
+                Una rama permite trabajar en una característica sin afectar la principal.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-6">
+
+        <h2>Comparación con otros sistemas</h2>
+        <div class="table-responsive">
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th>Sistema</th>
+                <th>Tipo</th>
+                <th>Popularidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Git</td>
+                <td>Distribuido</td>
+                <td>Muy alta</td>
+              </tr>
+              <tr>
+                <td>SVN</td>
+                <td>Centralizado</td>
+                <td>Media</td>
+              </tr>
+              <tr>
+                <td>Mercurial</td>
+                <td>Distribuido</td>
+                <td>Baja</td>
+              </tr>
+              <tr>
+                <td>Perforce</td>
+                <td>Centralizado</td>
+                <td>Especializado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-body">
+            <h3 class="card-title">¿Ya usaste Git?</h3>
+            <p>Completá el siguiente formulario:</p>
+
+            <form id="experienciaForm" class="row g-3">
+              <div class="col-12">
+                <label for="nombre" class="form-label">Tu nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control">
+              </div>
+
+              <div class="col-12">
+                <label for="experiencia" class="form-label">¿Qué usás más?</label>
+                <select id="experiencia" name="experiencia" class="form-select">
+                  <option value="git">Git</option>
+                  <option value="github">Git + GitHub</option>
+                  <option value="otro">Otro</option>
+                  <option value="ninguno">Ninguno</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <input type="submit" value="Enviar" class="btn btn-success btn-lg mt-2">
+                <button type="button" class="btn btn-outline-info ms-2" data-bs-toggle="modal" data-bs-target="#infoModal">
+                  Ver más
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <div class="modal fade" id="infoModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Información adicional</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          Este modal forma parte del bonus del trabajo final.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.getElementById('experienciaForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      alert('Formulario enviado.');
+    });
+  </script>
+</body>
+</html>
