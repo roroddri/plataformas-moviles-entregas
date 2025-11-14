@@ -1,0 +1,33 @@
+body{
+    background-color: #2b2b2b;
+    text-align: center;
+}
+h1{
+    color: #fff0a4;
+}
+p{
+    color: #fff0a4;
+}
+a{
+    background-color: #494949;
+    text-decoration: none;
+    color:#ffd900;
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid #fff0a4 ;
+    border-radius: 7px;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+a:hover{
+    transition-duration: 0.1s;
+    background-color: rgb(0, 0, 0);
+    padding: 3px 8px 3px 8px;
+}
+li:hover{
+    transition-duration: 0.3s;
+    margin: 9px 9px 9px 9px;
+}
+li{
+    margin-bottom: 7px;
+    list-style-type: none;
+}
