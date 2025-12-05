@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Intensificacion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container my-1 my-sm-2 my-md-4 my-lg-5">
+        <h1>Lista de Contactos</h1>
+        <div class="card">
+            <div class="card-body">
+                <h2>Contactos</h2>
+
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-6 mb-2 mb-md-0">
+                        <input type="text" class="form-control" id="input-search" placeholder="Buscar por Nombre, Apellido o Teléfono" oninput="mostrarListado()">
+                    </div>
+                    <div class="col-md-3 mb-2 mb-md-0">
+                        <select id="select-ordenar" class="form-select" onchange="mostrarListado()">
+                            <option value="nombre">Ordenar por Nombre</option>
+                            <option value="apellido">Ordenar por Apellido</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-warning w-100" id="btn-favoritos" onclick="toggleMostrarFavoritos()">
+                            <span id="fav-text">Ver Todos</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mb-3">
+                    <button class="btn btn-danger btn-sm" onclick="eliminarSeleccionados()">Eliminar Seleccionados</button>
+                </div>
+                
+                <ul id="lista-contactos" class="list-group"></ul>
+
+                <hr class="hr">
+
+                <h2>Nuevo Contacto</h2>
+                <form id="form-contacto">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="nombre" id="input-nombre" placeholder="Nombre" aria-label="Nombre" required>
+                        <input type="text" class="form-control" name="apellido" id="input-apellido" placeholder="Apellido" aria-label="Apellido" required>
+                        <input type="tel" class="form-control" name="telefono" id="input-telefono" placeholder="Teléfono" aria-label="Teléfono">
+                    </div>
+                    <button class="btn btn-primary" type="submit" id="btn-submit-form">Agregar Contacto</button>
+                    <button class="btn btn-success d-none" type="button" id="btn-guardar-edicion" onclick="guardarEdicion()">Guardar Edición</button>
+                    <button class="btn btn-secondary d-none" type="button" id="btn-cancelar-edicion" onclick="cancelarEdicion()">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        let contactos = [
+            {
+                id: Date.now() + 1, 
+                nombre: 'Rodrigo',
+                apellido: 'Arguello',
+                telefono: '1123456789',
+                favorito: false,
+                seleccionado: false
+            },
+            {
+                id: Date.now() + 2,
+                nombre: 'Tehuel',
+                apellido: 'Torres',
+                telefono: '1198765432',
+                favorito: true,
+                seleccionado: false
+            },
+            {
+                id: Date.now() + 3,
+                nombre: 'Matias',
+                apellido: 'Micheltorena',
+                telefono: '1159742561',
+                favorito: true,
+                seleccionado: false
+            },
+        ];
+
+        let modoEdicionId = null;
+        let mostrandoFavoritos = false; 
+        const $listaContactos = document.querySelector('#lista-contactos');
+        const $formContacto = document.querySelector('#form-contacto');
+
+        function generarIdUnico() {
+            return Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        function agregarContacto(nombre, apellido, telefono) {
+            const nuevoContacto = {
+                id: generarIdUnico(),
+                nombre: nombre.trim(),
+                apellido: apellido.trim(),
+                telefono: telefono.trim(),
+                favorito: false,
+                seleccionado: false
+            };
+            contactos.push(nuevoContacto);
+            mostrarListado();
+        }
+
+        function mostrarListado() {
+            $listaContactos.innerHTML = ''; 
+            const searchText = document.getElementById('input-search').value.toLowerCase();
+            let contactosFiltrados = contactos.filter(contacto => {
+                const searchMatch = !searchText || 
+                                    contacto.nombre.toLowerCase().includes(searchText) ||
+                                    contacto.apellido.toLowerCase().includes(searchText) ||
+                                    contacto.telefono.includes(searchText);
+                
+                const favoritoMatch = !mostrandoFavoritos || contacto.favorito;
+
+                return searchMatch && favoritoMatch;
+            });
+
+            const ordenarPor = document.getElementById('select-ordenar').value;
+            contactosFiltrados.sort((a, b) => {
+                const valA = a[ordenarPor].toLowerCase();
+                const valB = b[ordenarPor].toLowerCase();
+                if (valA < valB) return -1;
+                if (valA > valB) return 1;
+                return 0;
+            });
+
+
+            if (contactosFiltrados.length === 0) {
+                $listaContactos.innerHTML = '<li class="list-group-item text-muted">No hay contactos para mostrar.</li>';
+                return;
+            }
+
+            contactosFiltrados.forEach(contacto => {
+                const $li = document.createElement('li');
+                $li.className = 'list-group-item';
+                $li.setAttribute('data-id', contacto.id);
+
+                const $checkbox = document.createElement('input');
+                $checkbox.type = 'checkbox';
+                $checkbox.className = 'form-check-input me-3';
+                $checkbox.checked = contacto.seleccionado;
+                $checkbox.onchange = () => toggleSeleccion(contacto.id);
+                $li.appendChild($checkbox);
+
+                const $infoDiv = document.createElement('div');
+                $infoDiv.className = 'contact-info';
+                $infoDiv.innerHTML = `
+                    <p class="mb-0">
+                        <strong>${contacto.nombre} ${contacto.apellido}</strong>
+                    </p>
+                    <small class="text-muted">Tel: ${contacto.telefono}</small>
+                `;
+                $li.appendChild($infoDiv);
+
+                const $favBtn = document.createElement('span');
+                $favBtn.className = `favorite-btn ${contacto.favorito ? 'active' : ''}`;
+                $favBtn.innerHTML = contacto.favorito ? '&#9733;' : '&#9734;';
+                $favBtn.onclick = () => toggleFavorito(contacto.id);
+                $li.appendChild($favBtn);
+
+                const $actionsDiv = document.createElement('div');
+                $actionsDiv.className = 'btn-group btn-group-sm';
+                
+                const $editBtn = document.createElement('button');
+                $editBtn.className = 'btn btn-outline-info';
+                $editBtn.innerHTML = 'Editar';
+                $editBtn.onclick = () => editarContacto(contacto.id);
+                $actionsDiv.appendChild($editBtn);
+
+                const $deleteBtn = document.createElement('button');
+                $deleteBtn.className = 'btn btn-outline-danger';
+                $deleteBtn.innerHTML = 'Eliminar';
+                $deleteBtn.onclick = () => eliminarContacto(contacto.id);
+                $actionsDiv.appendChild($deleteBtn);
+
+                $li.appendChild($actionsDiv);
+                $listaContactos.appendChild($li);
+            });
+        }
+        
+        function handlerFormulario(e) {
+            e.preventDefault();
+            
+            if (modoEdicionId) return; 
+
+            const inputNombre = document.querySelector('#input-nombre');
+            const inputApellido = document.querySelector('#input-apellido');
+            const inputTelefono = document.querySelector('#input-telefono');
+
+            const nombre = inputNombre.value;
+            const apellido = inputApellido.value;
+            const telefono = inputTelefono.value;
+            
+            if (nombre && apellido) {
+                agregarContacto(nombre, apellido, telefono);
+            }
+            
+            inputNombre.value = '';
+            inputApellido.value = '';
+            inputTelefono.value = '';
+        }
+
+        function toggleFavorito(id) {
+            const contacto = contactos.find(c => c.id === id);
+            if (contacto) {
+                contacto.favorito = !contacto.favorito;
+                mostrarListado();
+            }
+        }
+
+        function toggleMostrarFavoritos() {
+            mostrandoFavoritos = !mostrandoFavoritos;
+            const $btn = document.getElementById('btn-favoritos');
+            const $text = document.getElementById('fav-text');
+            
+            if (mostrandoFavoritos) {
+                $text.textContent = 'Ver Todos';
+                $btn.classList.add('btn-warning');
+                $btn.classList.remove('btn-outline-warning');
+            } else {
+                $text.textContent = 'Ver Favoritos';
+                $btn.classList.remove('btn-warning');
+                $btn.classList.add('btn-outline-warning');
+            }
+            mostrarListado();
+        }
+ 
+        function eliminarContacto(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este contacto?')) {
+                contactos = contactos.filter(c => c.id !== id);
+                mostrarListado();
+            }
+        }
+      
+        function toggleSeleccion(id) {
+            const contacto = contactos.find(c => c.id === id);
+            if (contacto) {
+                contacto.seleccionado = !contacto.seleccionado;
+            }
+        }
+        
+        function eliminarSeleccionados() {
+            const seleccionados = contactos.filter(c => c.seleccionado);
+            if (seleccionados.length === 0) {
+                alert('No hay contactos seleccionados para eliminar.');
+                return;
+            }
+            
+            if (confirm(`¿Estás seguro de que quieres eliminar ${seleccionados.length} contactos?`)) {
+                contactos = contactos.filter(c => !c.seleccionado);
+                mostrarListado();
+            }
+        }
+        
+        function editarContacto(id) {
+            const contacto = contactos.find(c => c.id === id);
+            if (contacto) {
+                modoEdicionId = id;
+                document.querySelector('#input-nombre').value = contacto.nombre;
+                document.querySelector('#input-apellido').value = contacto.apellido;
+                document.querySelector('#input-telefono').value = contacto.telefono;
+                
+                document.querySelector('#btn-submit-form').classList.add('d-none');
+                document.querySelector('#btn-guardar-edicion').classList.remove('d-none');
+                document.querySelector('#btn-cancelar-edicion').classList.remove('d-none');
+            }
+        }
+        
+        function guardarEdicion() {
+            if (!modoEdicionId) return;
+
+            const contacto = contactos.find(c => c.id === modoEdicionId);
+            if (contacto) {
+                contacto.nombre = document.querySelector('#input-nombre').value.trim();
+                contacto.apellido = document.querySelector('#input-apellido').value.trim();
+                contacto.telefono = document.querySelector('#input-telefono').value.trim();
+                
+                modoEdicionId = null;
+                cancelarEdicion(); 
+                mostrarListado();
+            }
+        }
+        
+        function cancelarEdicion() {
+            modoEdicionId = null;
+            document.querySelector('#input-nombre').value = '';
+            document.querySelector('#input-apellido').value = '';
+            document.querySelector('#input-telefono').value = '';
+            
+            document.querySelector('#btn-submit-form').classList.remove('d-none');
+            document.querySelector('#btn-guardar-edicion').classList.add('d-none');
+            document.querySelector('#btn-cancelar-edicion').classList.add('d-none');
+        }
+
+
+        $formContacto.addEventListener('submit', handlerFormulario);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('fav-text').textContent = 'Ver Favoritos'; 
+            mostrarListado();
+        });
+        
+    </script>
+</body>
+</html>
